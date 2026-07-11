@@ -1,4 +1,4 @@
-package com.RepForge.user_service.Model;
+package com.RepForge.user_service.model;
 
 import java.time.LocalDateTime;
 
