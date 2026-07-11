@@ -1,9 +1,10 @@
 package com.RepForge.user_service.service;
 
-import org.springframework.http.HttpStatus;
+import java.util.Optional;
+import java.util.UUID;
+
 import org.springframework.stereotype.Service;
 
-import com.RepForge.user_service.model.ApiResponse;
 import com.RepForge.user_service.model.UserModel;
 import com.RepForge.user_service.model.DTOs.RegisterDTO;
 import com.RepForge.user_service.model.DTOs.ResponseDTO;
@@ -19,31 +20,25 @@ public class UserService {
 
     }
 
-    public ApiResponse getUserById(String user_id) {
-        ResponseDTO user = userRepo.findByUUID(user_id).get();
-        if (user == null) {
-            return new ApiResponse(false, "User Not Found", user, null, HttpStatus.NOT_FOUND);
-        }
-        return new ApiResponse(true, "User Found", user, null, HttpStatus.OK);
+    public Optional<ResponseDTO> getUserById(UUID user_id) {
+        Optional<UserModel> optionalUser = userRepo.findById(user_id);
+        if (optionalUser.isEmpty())
+            return Optional.empty();
+        UserModel user = optionalUser.get();
+        ResponseDTO responseDTO = new ResponseDTO();
+
+        responseDTO.setEmail(user.getEmail());
+        responseDTO.setFirstName(user.getFirstName());
+        responseDTO.setLastName(user.getLastName());
+        return Optional.of(responseDTO);
     }
 
-    public ApiResponse registerUser(RegisterDTO user) {
+    public Optional<ResponseDTO> registerUser(RegisterDTO user) {
 
-        if (user.getEmail() == null)
-            return new ApiResponse(false, "Enter valid email", null, user, HttpStatus.BAD_REQUEST);
-        if (user.getFirstName() == null)
-            return new ApiResponse(false, "Enter valid first name", null, user, HttpStatus.BAD_REQUEST);
-        if (user.getLastName() == null)
-            return new ApiResponse(false, "Enter valid last name", null, user, HttpStatus.BAD_REQUEST);
-        if (user.getPassword() == null)
-            return new ApiResponse(false, "Enter valid password", null, user, HttpStatus.BAD_REQUEST);
-
-        ResponseDTO exsistingUser = userRepo.findByEmail(user.getEmail()).get();
-
-        if (exsistingUser != null) {
-            return new ApiResponse(false, "User Already Exsists", null, user, HttpStatus.BAD_REQUEST);
+        Optional<UserModel> existingUser = userRepo.findByEmail(user.getEmail());
+        if (existingUser.isPresent()) {
+            return Optional.empty();
         }
-
         UserModel newUser = new UserModel();
 
         newUser.setEmail(user.getEmail());
@@ -53,10 +48,11 @@ public class UserService {
 
         UserModel userSaved = userRepo.save(newUser);
 
-        if (userSaved == null) {
-            return new ApiResponse(false, "User Not Saved", null, user, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        return new ApiResponse(true, "User Registered Successfully", null, user, HttpStatus.CREATED);
+        ResponseDTO response = new ResponseDTO();
+        response.setEmail(userSaved.getEmail());
+        response.setLastName(userSaved.getLastName());
+        response.setFirstName(user.getFirstName());
+        return Optional.of(response);
     }
 
 }
