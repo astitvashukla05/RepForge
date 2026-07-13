@@ -12,10 +12,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class RegisterDTO {
     @NotBlank(message = "First name is required")
-    @Size(max = 40, min = 6, message = "Enter Valid Name")
+    @Size(max = 40, min = 3, message = "Enter Valid Name")
     private String firstName;
     @NotBlank(message = "Last name is required")
-    @Size(max = 40, min = 6, message = "Enter Valid Name")
+    @Size(max = 40, min = 3, message = "Enter Valid Name")
     private String lastName;
     @NotBlank(message = "Please enter a valid email")
     @Email(message = "Enter a valid email")
