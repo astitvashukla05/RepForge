@@ -31,3 +31,10 @@ build/
 
 ### VS Code ###
 .vscode/
+
+application.properties
+src/main/resources/application.properties
+user-service/src/main/resources/application.properties
+.vscode
+src/main/resources/application.properties
+**/application.properties
