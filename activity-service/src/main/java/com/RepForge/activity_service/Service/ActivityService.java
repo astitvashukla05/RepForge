@@ -1,5 +1,9 @@
 package com.RepForge.activity_service.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 
 import com.RepForge.activity_service.Repository.ActivityRepo;
@@ -38,5 +42,32 @@ public class ActivityService {
         activityResponse.setStartTime(savedActivity.getStartTime());
         activityResponse.setType(savedActivity.getType());
         return activityResponse;
+    }
+
+    public List<ActivityResponse> getActivity(String userId) {
+        List<Activity> userActivities = activityRepo.findByUserId(userId);
+        List<ActivityResponse> activities = new ArrayList<>();
+        for (Activity activity : userActivities) {
+            ActivityResponse res = new ActivityResponse();
+            res.setAdditionalInfo(activity.getAdditionalInfo());
+            res.setCaloriesBurnt(activity.getCaloriesBurnt());
+            res.setDuration(activity.getDuration());
+            res.setStartTime(activity.getStartTime());
+            res.setType(activity.getType());
+            activities.add(res);
+        }
+        return activities;
+    }
+
+    public ActivityResponse getActivityById(String acitivityId) {
+        Optional<Activity> activity = activityRepo.findById(acitivityId);
+        Activity act = activity.get();
+        ActivityResponse res = new ActivityResponse();
+        res.setAdditionalInfo(act.getAdditionalInfo());
+        res.setCaloriesBurnt(act.getCaloriesBurnt());
+        res.setDuration(act.getDuration());
+        res.setStartTime(act.getStartTime());
+        res.setType(act.getType());
+        return res;
     }
 }

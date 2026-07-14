@@ -2,7 +2,6 @@ package com.RepForge.activity_service.model;
 
 import java.time.LocalDateTime;
 import java.util.Map;
-import java.util.UUID;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
@@ -12,7 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-//import lombok.Data;
+
 import lombok.NoArgsConstructor;
 
 @Document(collection = "activity")
@@ -22,8 +21,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Activity {
     @Id
-    private UUID id;
-    private UUID userId;
+    private String id;
+    private String userId;
     private ActivityType type;
     private Integer duration;
     private Integer caloriesBurnt;
