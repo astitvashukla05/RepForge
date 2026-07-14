@@ -19,6 +19,7 @@ import com.RepForge.activity_service.model.DTOs.ActivityResponse;
 
 @RequestMapping("/api/activities")
 public class ActivityController {
+
     private final ActivityService activityService;
 
     public ActivityController(ActivityService activityService) {
@@ -31,7 +32,7 @@ public class ActivityController {
 
     }
 
-    @GetMapping
+    @GetMapping("/{userId}")
     public ResponseEntity<List<ActivityResponse>> getActivity(@RequestHeader("X-User-ID") String userId) {
         return ResponseEntity.ok(activityService.getActivity(userId));
     }
