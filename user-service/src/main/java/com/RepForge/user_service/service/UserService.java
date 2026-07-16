@@ -41,7 +41,7 @@ public class UserService {
 
         Optional<UserModel> existingUser = userRepo.findByEmail(user.getEmail());
         if (existingUser.isPresent()) {
-            throw new UserAlreadyExistsException("User Already Exists with email" + user.getEmail());
+            throw new UserAlreadyExistsException("User Already Exists with email : " + user.getEmail());
         }
 
         UserModel newUser = new UserModel();

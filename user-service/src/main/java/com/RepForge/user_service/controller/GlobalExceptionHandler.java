@@ -12,22 +12,25 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.RepForge.user_service.exceptions.UserAlreadyExistsException;
 import com.RepForge.user_service.exceptions.UserNotFoundException;
-import com.RepForge.user_service.model.ErrorResponse;
+import com.RepForge.user_service.model.ApiResponse;
+
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleUserNotFoundException(UserNotFoundException exception) {
-        ErrorResponse userNotFound = new ErrorResponse("Something went wrong. Please try again later ",
-                "User Not Found ");
+    public ResponseEntity<ApiResponse<String>> handleUserNotFoundException(UserNotFoundException exception) {
+            ApiResponse<String> userNotFound=new ApiResponse<>
+            (false,"Something went wrong, please try again later"
+            ,"User Not Found");
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(userNotFound);
     }
 
     @ExceptionHandler(UserAlreadyExistsException.class)
-    public ResponseEntity<ErrorResponse> userAlreadyExists(UserAlreadyExistsException exception) {
-        ErrorResponse userExists = new ErrorResponse("Something went wrong.Please try again later.",
-                "User Already Exists please try login");
+    public ResponseEntity<ApiResponse<String>> userAlreadyExists(UserAlreadyExistsException exception) {
+        ApiResponse<String> userExists = new ApiResponse<>(false,
+            "Something went wrong.Please try again later.",
+                "User Already Exists please login");
         return ResponseEntity.status(HttpStatus.CONFLICT).body(userExists);
     }
 
@@ -47,9 +50,10 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleException(Exception ex) {
+    public ResponseEntity<ApiResponse<String>> handleException(Exception ex) {
 
-        ErrorResponse error = new ErrorResponse(
+        ApiResponse<String> error = new ApiResponse<>(
+            false,
                 "Internal Server Error",
                 ex.getMessage());
 
