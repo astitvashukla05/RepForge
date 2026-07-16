@@ -2,11 +2,12 @@ package com.RepForge.activity_service.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+
 
 import org.springframework.stereotype.Service;
 
 import com.RepForge.activity_service.Repository.ActivityRepo;
+import com.RepForge.activity_service.exceptions.ActivityNotExists;
 import com.RepForge.activity_service.model.Activity;
 import com.RepForge.activity_service.model.DTOs.ActivityRequest;
 import com.RepForge.activity_service.model.DTOs.ActivityResponse;
@@ -23,7 +24,7 @@ public class ActivityService {
     }
 
     public ActivityResponse trackActivity(@Valid ActivityRequest request) {
-
+        // Request for user then validate if exsists or not
         Activity activity = Activity.builder()
                 .userId(request.getUserId())
                 .type(request.getType())
@@ -45,6 +46,7 @@ public class ActivityService {
     }
 
     public List<ActivityResponse> getActivity(String userId) {
+        // Request for user then validate if exsists or not
         List<Activity> userActivities = activityRepo.findByUserId(userId);
         List<ActivityResponse> activities = new ArrayList<>();
         for (Activity activity : userActivities) {
@@ -60,14 +62,16 @@ public class ActivityService {
     }
 
     public ActivityResponse getActivityById(String acitivityId) {
-        Optional<Activity> activity = activityRepo.findById(acitivityId);
-        Activity act = activity.get();
+        
+      Activity activity=  activityRepo.findById(acitivityId).orElseThrow(()->new ActivityNotExists("activity Not Exists for id :"+acitivityId));
+
+        
         ActivityResponse res = new ActivityResponse();
-        res.setAdditionalInfo(act.getAdditionalInfo());
-        res.setCaloriesBurnt(act.getCaloriesBurnt());
-        res.setDuration(act.getDuration());
-        res.setStartTime(act.getStartTime());
-        res.setType(act.getType());
+        res.setAdditionalInfo(activity.getAdditionalInfo());
+        res.setCaloriesBurnt(activity.getCaloriesBurnt());
+        res.setDuration(activity.getDuration());
+        res.setStartTime(activity.getStartTime());
+        res.setType(activity.getType());
         return res;
     }
 }
