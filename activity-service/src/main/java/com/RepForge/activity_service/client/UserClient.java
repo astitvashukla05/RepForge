@@ -11,7 +11,7 @@ import com.RepForge.activity_service.model.ApiResponse;
 import com.RepForge.activity_service.model.DTOs.ResponseDTO;
 
 @FeignClient(name = "user-service", url = "http://localhost:8080")
-public interface ApiClient {
+public interface UserClient {
     @GetMapping("/api/users/{userId}")
     ApiResponse<ResponseDTO> getUserById(@PathVariable UUID userId);
 }

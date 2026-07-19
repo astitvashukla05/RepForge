@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.RepForge.activity_service.Repository.ActivityRepo;
-import com.RepForge.activity_service.client.ApiClient;
+import com.RepForge.activity_service.client.UserClient;
 import com.RepForge.activity_service.exceptions.ActivityNotExists;
 import com.RepForge.activity_service.exceptions.UserNotFoundException;
 import com.RepForge.activity_service.model.Activity;
@@ -21,9 +21,9 @@ import jakarta.validation.Valid;
 public class ActivityService {
 
     private final ActivityRepo activityRepo;
-    private final ApiClient apiClient;
+    private final UserClient apiClient;
 
-    public ActivityService(ActivityRepo activityRepo, ApiClient apiClient) {
+    public ActivityService(ActivityRepo activityRepo, UserClient apiClient) {
         this.activityRepo = activityRepo;
         this.apiClient = apiClient;
     }
@@ -45,9 +45,9 @@ public class ActivityService {
                 .startTime(request.getStarTime())
                 .additionalInfo(request.getAddtionalInfo())
                 .build();
-        System.out.println("************************* " + activity + " ************************");
+
         Activity savedActivity = activityRepo.save(activity);
-        System.out.println(activity);
+
         ActivityResponse activityResponse = new ActivityResponse();
         activityResponse.setAdditionalInfo(savedActivity.getAdditionalInfo());
         activityResponse.setCaloriesBurnt(savedActivity.getCaloriesBurnt());
