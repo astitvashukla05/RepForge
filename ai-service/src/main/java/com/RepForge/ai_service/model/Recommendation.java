@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Recomendation {
+public class Recommendation {
     @Id
     private String id;
     private String activityId;
