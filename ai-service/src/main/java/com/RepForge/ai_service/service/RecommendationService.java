@@ -5,14 +5,25 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
+import com.RepForge.ai_service.Repository.AiRepo;
 import com.RepForge.ai_service.model.Recommendation;
 
 @Service
 public class RecommendationService {
+    AiRepo aiRepo;
+
+    RecommendationService(AiRepo aiRepo) {
+        this.aiRepo = aiRepo;
+    }
 
     public List<Recommendation> getUserRecommendations(UUID userId) {
+        return aiRepo.findByUserId(userId);
 
-        throw new UnsupportedOperationException("Unimplemented method 'getUserRecommendations'");
+    }
+
+    public Recommendation getActivityRecommendations(String activityId) {
+        return aiRepo.findByActivityId(activityId);
+
     }
 
 }
