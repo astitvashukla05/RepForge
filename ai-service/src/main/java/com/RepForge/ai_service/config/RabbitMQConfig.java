@@ -1,4 +1,4 @@
-package com.RepForge.activity_service.config;
+package com.RepForge.ai_service.config;
 
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;

@@ -3,6 +3,8 @@ package com.RepForge.activity_service.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.RepForge.activity_service.Repository.ActivityRepo;
@@ -16,16 +18,24 @@ import com.RepForge.activity_service.model.DTOs.ActivityResponse;
 
 import feign.FeignException;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 public class ActivityService {
 
     private final ActivityRepo activityRepo;
     private final UserClient apiClient;
+    @Value("${rabbitmq.exchange.name}")
+    private String exchange;
+    @Value("${rabbitmq.routing.key}")
+    private String routingKey;
+    private final RabbitTemplate rabbitTemplate;
 
-    public ActivityService(ActivityRepo activityRepo, UserClient apiClient) {
+    public ActivityService(ActivityRepo activityRepo, UserClient apiClient, RabbitTemplate rabbitTemplate) {
         this.activityRepo = activityRepo;
         this.apiClient = apiClient;
+        this.rabbitTemplate = rabbitTemplate;
     }
 
     public ActivityResponse trackActivity(@Valid ActivityRequest request) {
@@ -54,6 +64,16 @@ public class ActivityService {
         activityResponse.setDuration(savedActivity.getDuration());
         activityResponse.setStartTime(savedActivity.getStartTime());
         activityResponse.setType(savedActivity.getType());
+        // Pubblish to RabbitMq for ai processing
+        try {
+            log.info("Publishing message: {}", activityResponse);
+
+            rabbitTemplate.convertAndSend(exchange, routingKey, savedActivity);
+
+            log.info("Message published successfully");
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to publish to Rabbit MQ");
+        }
         return activityResponse;
     }
 
