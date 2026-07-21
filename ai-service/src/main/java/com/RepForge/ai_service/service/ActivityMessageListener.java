@@ -10,6 +10,12 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class ActivityMessageListener {
+    private final ActivityAiService activityAiService;
+
+    ActivityMessageListener(ActivityAiService activityAiService) {
+        this.activityAiService = activityAiService;
+    }
+
     // @Value("${rabbitmq.exchange.name}")
     // private String exchange;
     // @Value("${rabbitmq.routing.key}")
@@ -18,6 +24,13 @@ public class ActivityMessageListener {
     // private String queue;
     @RabbitListener(queues = "${rabbitmq.queue.name}")
     public void processActivity(Activity activity) {
+
         log.info("Received: {}", activity);
+
+        try {
+            activityAiService.generateRecommendation(activity);
+        } catch (Exception e) {
+            log.error("Gemini API failed", e);
+        }
     }
 }
